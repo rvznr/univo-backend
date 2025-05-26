@@ -76,3 +76,6 @@ def get_current_user():
         'schoolId': user.school_id,
         'gender': user.gender
     })
+@auth_bp.route('/test')
+def test():
+    return jsonify({"message": "CORS okay!"})
