@@ -2,16 +2,17 @@ from flask import Blueprint, request, jsonify
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from app import db
-from app.models import User, Feedback  
+from app.models import User
 
 bcrypt = Bcrypt()
-
 auth_bp = Blueprint('auth_bp', __name__)
 
-@auth_bp.route('/register', methods=['POST'])
+@auth_bp.route('/register', methods=['POST', 'OPTIONS'])
 def register():
-    data = request.get_json()
+    if request.method == 'OPTIONS':
+        return '', 204
 
+    data = request.get_json()
     required_fields = ['school_id', 'name', 'surname', 'email', 'password', 'gender']
     for field in required_fields:
         if not data.get(field):
@@ -36,8 +37,11 @@ def register():
 
     return jsonify({"message": "Registration successful"}), 201
 
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/login', methods=['POST', 'OPTIONS'])
 def login():
+    if request.method == 'OPTIONS':
+        return '', 204
+
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
@@ -53,7 +57,7 @@ def login():
     access_token = create_access_token(identity=str(user.id))
     return jsonify({
         "message": "Login successful",
-        "access_token": access_token,  
+        "access_token": access_token,
         "user_id": user.id
     }), 200
 
