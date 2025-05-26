@@ -8,7 +8,7 @@ quizresult_bp = Blueprint('quizresult_bp', __name__)
 
 
 @quizresult_bp.route('/quiz/<int:quiz_id>/results', methods=['GET'])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins="*", supports_credentials=True)
 @jwt_required()
 def get_quiz_result_by_id(quiz_id):
     try:
@@ -19,28 +19,28 @@ def get_quiz_result_by_id(quiz_id):
         ).all()
 
         if not user_answers:
-            return jsonify({ "results": [] }), 200
+            return jsonify({"results": []}), 200
 
         result_data = []
         for ua in user_answers:
             question = Question.query.get(ua.question_id)
             result_data.append({
                 "quizId": ua.quiz_id,
-                "question": question.question,  
+                "question": question.question,
                 "selectedAnswer": ua.selected_answer,
                 "correctAnswer": question.correct_answer,
                 "isCorrect": ua.is_correct,
                 "explanation": question.explanation or ""
             })
 
-        return jsonify({ "results": result_data }), 200
+        return jsonify({"results": result_data}), 200
     except Exception as e:
         print("❌ get_quiz_result_by_id error:", str(e))
-        return jsonify({ "error": "failed to fetch results" }), 500
+        return jsonify({"error": "failed to fetch results"}), 500
 
 
 @quizresult_bp.route('/quizresults', methods=['GET'])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins="*", supports_credentials=True)
 @jwt_required()
 def get_all_quiz_results():
     try:
@@ -63,7 +63,7 @@ def get_all_quiz_results():
 
 
 @quizresult_bp.route('/quizresults', methods=['POST'])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins="*", supports_credentials=True)
 @jwt_required()
 def save_quiz_result():
     try:
@@ -117,7 +117,7 @@ def save_quiz_result():
 
 
 @quizresult_bp.route('/user_answer', methods=['POST'])
-@cross_origin(origins="http://localhost:3000", supports_credentials=True)
+@cross_origin(origins="*", supports_credentials=True)
 @jwt_required()
 def save_user_answer():
     try:
