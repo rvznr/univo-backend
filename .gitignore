@@ -1,0 +1,42 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+*.pyo
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# VSCode ve IDE ayarları
+.vscode/
+.idea/
+
+# Secret config dosyaları
+.env
+*.env
+
+# DB dosyaları
+*.db
+*.sqlite3
+
+# Model ve eğitim dosyaları
+*.joblib
+*.pkl
+*.h5
+
+# Flask migrate klasörleri
+migrations/
+instance/
+
+# Kendi özel klasörlerin
+models/
+uploads/
+logs/
+
+# Test çıktıları
+coverage/
+htmlcov/
+*.log
