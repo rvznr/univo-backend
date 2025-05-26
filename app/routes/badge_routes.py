@@ -9,7 +9,6 @@ badge_bp = Blueprint('badge', __name__)
 
 @badge_bp.route('/user/badges', methods=['GET', 'OPTIONS'])
 @jwt_required()
-@cross_origin(origin='http://localhost:3000', supports_credentials=True)
 def get_user_badges():
     user_id = get_jwt_identity()
 
