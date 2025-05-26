@@ -2,13 +2,11 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import db
 from app.models import UserAnswer, Question, QuizResult
-from flask_cors import cross_origin
 
 quizresult_bp = Blueprint('quizresult_bp', __name__)
 
 
 @quizresult_bp.route('/quiz/<int:quiz_id>/results', methods=['GET'])
-@cross_origin(origins="*", supports_credentials=True)
 @jwt_required()
 def get_quiz_result_by_id(quiz_id):
     try:
@@ -40,7 +38,6 @@ def get_quiz_result_by_id(quiz_id):
 
 
 @quizresult_bp.route('/quizresults', methods=['GET'])
-@cross_origin(origins="*", supports_credentials=True)
 @jwt_required()
 def get_all_quiz_results():
     try:
@@ -63,7 +60,6 @@ def get_all_quiz_results():
 
 
 @quizresult_bp.route('/quizresults', methods=['POST'])
-@cross_origin(origins="*", supports_credentials=True)
 @jwt_required()
 def save_quiz_result():
     try:
@@ -117,7 +113,6 @@ def save_quiz_result():
 
 
 @quizresult_bp.route('/user_answer', methods=['POST'])
-@cross_origin(origins="*", supports_credentials=True)
 @jwt_required()
 def save_user_answer():
     try:
