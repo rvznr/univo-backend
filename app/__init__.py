@@ -22,10 +22,9 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
-    CORS(app, origins=[
-        "http://localhost:3000",
-        "https://univo-frontend.vercel.app"
-    ], supports_credentials=True)
+    CORS(app, origins="*", supports_credentials=True)
+
+
 
     from app.routes.auth_routes import auth_bp
     from app.routes.quiz_routes import quiz_bp
