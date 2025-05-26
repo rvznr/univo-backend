@@ -24,7 +24,8 @@ def create_app():
 
     CORS(app, resources={r"/api/*": {"origins": [
     "http://localhost:3000",
-    "https://univo-frontend.vercel.app"
+    "https://univo-frontend.vercel.app",
+    "https://univo-frontend-ks00mhwqh-ravza-nurs-projects.vercel.app"
 ]}}, supports_credentials=True)
 
 
