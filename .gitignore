@@ -19,7 +19,7 @@ env/
 *.env
 
 # DB dosyaları
-*.db
+#*.db
 *.sqlite3
 
 # Model ve eğitim dosyaları

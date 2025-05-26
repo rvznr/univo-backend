@@ -22,9 +22,7 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
-    CORS(app, origins="*", supports_credentials=True)
-
-
+    CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
     from app.routes.auth_routes import auth_bp
     from app.routes.quiz_routes import quiz_bp
@@ -53,5 +51,11 @@ def create_app():
     app.register_blueprint(image_bp)
     app.register_blueprint(exercise_bp, url_prefix="/api")
     app.register_blueprint(ai_bp, url_prefix="/api/ai")
+
+    # ✅ Tabloları otomatik oluştur (eksikse)
+    with app.app_context():
+        db.create_all()
+        print("✅ Veritabanı tabloları oluşturuldu.")
+        print("📂 DB yolu:", app.config["SQLALCHEMY_DATABASE_URI"])
 
     return app
