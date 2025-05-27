@@ -1,10 +1,27 @@
 import os
-from datetime import timedelta
+from dotenv import load_dotenv
+from urllib.parse import quote_plus
+
+load_dotenv()
 
 class Config:
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'univo.db')
+    driver = "ODBC Driver 18 for SQL Server"
+    server = os.getenv("DB_SERVER", "75.119.144.130")
+    database = os.getenv("DB_NAME", "univo_db")
+    username = os.getenv("DB_USER", "SA")
+    password = os.getenv("DB_PASSWORD", "YourStrong!Passw0rd")
 
+    params = quote_plus(
+        f"DRIVER={driver};"
+        f"SERVER={server};"
+        f"DATABASE={database};"
+        f"UID={username};"
+        f"PWD={password};"
+        f"Encrypt=yes;"
+        f"TrustServerCertificate=yes;"
+    )
+
+    SQLALCHEMY_DATABASE_URI = f"mssql+pyodbc:///?odbc_connect={params}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET", "fallback-secret-key")  # default olsun
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
+    DEBUG = False
