@@ -22,7 +22,7 @@ jobs:
 
     - name: Deploy Flask app
       run: |
-        ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
           set -e
           cd ${{ secrets.APP_DIR }} || git clone https://github.com/rvznr/univo-backend.git ${{ secrets.APP_DIR }}
           cd ${{ secrets.APP_DIR }}
