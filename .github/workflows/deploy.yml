@@ -26,18 +26,13 @@ jobs:
           set -e
           cd /opt/univo-backend
 
-          # Güncel kodları getir
           git pull origin main
 
-          # Virtualenv'i aktifleştir
           source venv/bin/activate
 
-          # Gereken paketleri yükle
           pip install -r requirements.txt
 
-          # Eski çalışmayı durdur (eğer varsa)
           pkill -f "python run.py" || true
 
-          # Arka planda başlat
           nohup python run.py > backend.log 2>&1 &
         EOF
