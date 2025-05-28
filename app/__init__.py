@@ -22,15 +22,18 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
+    from flask_cors import CORS
+
     CORS(
         app,
-        origins=[
+        resources={r"/api/*": {"origins": [
             "https://univo-frontend.vercel.app",
-            "https://www.univoxacademia.online",
             "https://univoxacademia.online",
-        ],
+            "https://www.univoxacademia.online"
+        ]}},
         supports_credentials=True
-    )
+)
+
 
     
     from app.routes.auth_routes import auth_bp
