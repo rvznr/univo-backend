@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
+    - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Set up SSH
@@ -18,21 +18,15 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.VPS_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-    - name: Deploy Backend
+    - name: Deploy Backend via SSH
       run: |
-        ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
           set -e
           cd /opt/univo-backend
-
           git pull origin main
-
           source venv/bin/activate
-
           pip install -r requirements.txt
-
           pkill -f "python run.py" || true
-
           nohup python run.py > backend.log 2>&1 &
         EOF
