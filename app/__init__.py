@@ -25,12 +25,13 @@ def create_app():
     CORS(
         app,
         origins=[
-            "http://localhost:3000",
-            "https://univo-frontend.vercel.app/",
-                    "https://75.119.144.130",
+            "https://univo-frontend.vercel.app",
+            "https://www.univoxacademia.online",
+            "https://univoxacademia.online",
         ],
         supports_credentials=True
     )
+
     
     from app.routes.auth_routes import auth_bp
     from app.routes.quiz_routes import quiz_bp
