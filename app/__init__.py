@@ -26,7 +26,9 @@ def create_app():
         app,
         origins=[
             "http://localhost:3000",
-            "https://frontend-univo.vercel.app"
+            "https://frontend-univo.vercel.app",
+                    "https://75.119.144.130"
+
         ],
         supports_credentials=True
     )
