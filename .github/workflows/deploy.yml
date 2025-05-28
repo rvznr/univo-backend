@@ -10,25 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout Code
       uses: actions/checkout@v3
 
     - name: Set up SSH
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.VPS_KEY }}" > ~/.ssh/id_ed25519
-        chmod 600 ~/.ssh/id_ed25519
+        echo "${{ secrets.VPS_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-    - name: Deploy Flask app
+    - name: Deploy Backend
       run: |
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+        ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
           set -e
-          cd ${{ secrets.APP_DIR }} || git clone https://github.com/rvznr/univo-backend.git ${{ secrets.APP_DIR }}
-          cd ${{ secrets.APP_DIR }}
+          cd /opt/univo-backend
+
+          # Güncel kodları getir
           git pull origin main
-          python3 -m venv venv
+
+          # Virtualenv'i aktifleştir
           source venv/bin/activate
+
+          # Gereken paketleri yükle
           pip install -r requirements.txt
-          systemctl restart univo
+
+          # Eski çalışmayı durdur (eğer varsa)
+          pkill -f "python run.py" || true
+
+          # Arka planda başlat
+          nohup python run.py > backend.log 2>&1 &
         EOF
