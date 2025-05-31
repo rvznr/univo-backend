@@ -26,17 +26,15 @@ def submit_feedback():
         return jsonify({'error': 'Mesaj boş olamaz.'}), 400
 
     try:
-        # 1. Feedback kaydet
         feedback = Feedback(user_id=user_id, message=message.strip())
         db.session.add(feedback)
 
-        # 2. UserProgress kontrol et
         progress = UserProgress.query.filter_by(user_id=user_id, module_id=None).first()
 
         if not progress:
             progress = UserProgress(
                 user_id=user_id,
-                module_id=None,
+                module_id = db.Column(db.Integer, db.ForeignKey('module.id'), nullable=True),
                 xp_from_notes=0,
                 xp_from_exercises=0,
                 xp_from_feedback=160
