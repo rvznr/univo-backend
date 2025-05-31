@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 from app import db
 from app.models import Feedback, UserProgress
 
-feedback_bp = Blueprint('feedback_bp', __name__)  # Blueprint adı __init__.py ile uyumlu
+feedback_bp = Blueprint('feedback_bp', __name__)
 
 @feedback_bp.route('/feedback', methods=['OPTIONS', 'POST'])
 @cross_origin(origins=["http://localhost:3000"], supports_credentials=True)
@@ -15,8 +15,13 @@ def submit_feedback():
 
     user_id = get_jwt_identity()
     data = request.get_json()
-    message = data.get('message')
+    print("🔐 JWT user_id:", user_id)
+    print("📨 Gelen data:", data)
 
+    if not data:
+        return jsonify({'error': 'Geçersiz JSON verisi.'}), 400
+
+    message = data.get('message')
     if not message or not message.strip():
         return jsonify({'error': 'Mesaj boş olamaz.'}), 400
 
@@ -25,7 +30,7 @@ def submit_feedback():
         feedback = Feedback(user_id=user_id, message=message.strip())
         db.session.add(feedback)
 
-        # 2. UserProgress kontrol et (module_id=None olan genel kayda XP ekle)
+        # 2. UserProgress kontrol et
         progress = UserProgress.query.filter_by(user_id=user_id, module_id=None).first()
 
         if not progress:
@@ -45,5 +50,7 @@ def submit_feedback():
 
     except Exception as e:
         db.session.rollback()
+        import traceback
         print("❌ Feedback error:", str(e))
+        traceback.print_exc()
         return jsonify({'error': 'Sunucu hatası oluştu.'}), 500
