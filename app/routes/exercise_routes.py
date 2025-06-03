@@ -21,16 +21,19 @@ def get_module_with_exercises(module_id):
 
             if raw_questions:
                 try:
+                    # Ham veriyi JSON'a çevir
                     if isinstance(raw_questions, str):
                         parsed = json.loads(raw_questions)
                     else:
                         parsed = raw_questions
 
+                    # Eğer tek bir iç liste varsa düzleştir (örnek: [[{...}, {...}]])
                     if isinstance(parsed, list) and len(parsed) == 1 and isinstance(parsed[0], list):
                         parsed = parsed[0]
 
+                    # Her soruya varsayılan xp_reward ekle
                     for q in parsed:
-                        if "xp_reward" not in q:
+                        if isinstance(q, dict) and "xp_reward" not in q:
                             q["xp_reward"] = 15
 
                     parsed_questions = parsed
