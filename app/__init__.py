@@ -64,7 +64,6 @@ def create_app():
     app.register_blueprint(exercise_bp, url_prefix="/api")
     app.register_blueprint(ai_bp, url_prefix="/api/ai")
 
-    # ✅ Tabloları otomatik oluştur (eksikse)
     with app.app_context():
         db.create_all()
         print("✅ Veritabanı tabloları oluşturuldu.")
