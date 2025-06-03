@@ -7,6 +7,7 @@ MODEL_DIR = os.path.join(BASE_DIR, 'models')
 print("Model klasörü:", MODEL_DIR)
 print("Dosyalar:", os.listdir(MODEL_DIR))
 
+
 def get_topic_recommendations(user_id):
     user_id = str(user_id)
 
@@ -14,10 +15,15 @@ def get_topic_recommendations(user_id):
     le_user_path = os.path.join(MODEL_DIR, "le_user.joblib")
     le_topic_path = os.path.join(MODEL_DIR, "le_topic.joblib")
 
-    if not (os.path.exists(model_path) and os.path.exists(le_user_path) and os.path.exists(le_topic_path)):
+    missing = []
+    if not os.path.exists(model_path): missing.append("nb_model.joblib")
+    if not os.path.exists(le_user_path): missing.append("le_user.joblib")
+    if not os.path.exists(le_topic_path): missing.append("le_topic.joblib")
+
+    if missing:
         return [{
             "title": "Modell nicht gefunden",
-            "description": "Das Trainingsmodell wurde nicht gefunden. Bitte zuerst train_model.py ausführen.",
+            "description": f"Fehlende Dateien: {', '.join(missing)}. Bitte zuerst train_model.py ausführen.",
             "type": "error"
         }]
 
@@ -40,6 +46,7 @@ def get_topic_recommendations(user_id):
         prob_wrong = model.predict_proba([[user_encoded, topic_encoded]])[0][0]
         predictions[topic_id] = prob_wrong
 
+    # %40 üzeri filtrele
     filtered = [(tid, prob) for tid, prob in predictions.items() if prob >= 0.4]
     sorted_topics = sorted(filtered, key=lambda x: x[1], reverse=True)
 
@@ -69,14 +76,3 @@ def get_topic_recommendations(user_id):
 
     if not suggestions:
         fallback = sorted(predictions.items(), key=lambda x: x[1], reverse=True)
-        for topic_id, prob in fallback:
-            topic = Topic.query.get(int(topic_id))
-            if topic:
-                note = Note.query.filter_by(module_id=topic.module_id).first()
-                if note and note.title not in shown_titles:
-                    suggestions.append(build_suggestion(note.title, note.module_id, topic.id, prob))
-                    shown_titles.add(note.title)
-            if len(suggestions) >= 3:
-                break
-
-    return suggestions
