@@ -13,6 +13,10 @@ def get_topic_recommendations(user_id):
     model_path = os.path.join(MODEL_DIR, "nb_model.joblib")
     user_path = os.path.join(MODEL_DIR, "le_user.joblib")
     topic_path = os.path.join(MODEL_DIR, "le_topic.joblib")
+    print("🧠 Beklenen model dosyaları:")
+    print("➡️", model_path)
+    print("➡️", user_path)
+    print("➡️", topic_path)
 
     if not (os.path.exists(model_path) and os.path.exists(user_path) and os.path.exists(topic_path)):
         print("❌ Model dosyaları eksik:", os.listdir(MODEL_DIR) if os.path.exists(MODEL_DIR) else "Model klasörü yok")
