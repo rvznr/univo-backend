@@ -39,11 +39,12 @@ def train_and_save_model():
     model = MultinomialNB()
     model.fit(X, y)
 
-    model_dir = os.path.join(os.path.dirname(__file__), 'app', 'ai', 'models')
+    model_dir = os.path.join(os.path.dirname(__file__), 'models')
     os.makedirs(model_dir, exist_ok=True)
     joblib.dump(model, os.path.join(model_dir, "nb_model.joblib"))
     joblib.dump(le_user, os.path.join(model_dir, "le_user.joblib"))
     joblib.dump(le_topic, os.path.join(model_dir, "le_topic.joblib"))
+
 
 
     print("✅ Modell wurde erfolgreich trainiert und gespeichert.")
