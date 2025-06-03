@@ -42,7 +42,8 @@ def get_user_badges():
         badges.append({"badge_id": 5, "name": "5 Quizze gelöst", "imageUrl": "/badges/5.svg"})
     if quiz_count >= 5 and completed_modules >= 3 and total_xp >= 500:
         badges.append({"badge_id": 8, "name": "Alles abgeschlossen!", "imageUrl": "/badges/8.svg"})
+    feedback_count = Feedback.query.filter_by(user_id=user_id).count()
     if feedback_count >= 1:
-        badges.append({"badge_id": 6, "name": "Feedback gegeben", "imageUrl": "/badges/6.svg"})
+         badges.append({"badge_id": 6, "name": "Feedback gegeben", "imageUrl": "/badges/6.svg"})
 
     return jsonify({"badges": badges}), 200
