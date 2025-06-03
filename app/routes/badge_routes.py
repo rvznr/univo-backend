@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models import UserProgress, QuizResult
+from app.models import Feedback, UserProgress, QuizResult
 from app import db
 from sqlalchemy import func
 from flask_cors import cross_origin
@@ -21,12 +21,12 @@ def get_user_badges():
     ).filter_by(user_id=user_id).scalar()
 
     total_xp = (learn_xp or 0) + (quiz_xp or 0)
-
     quiz_count = QuizResult.query.filter_by(user_id=user_id).count()
     completed_modules = UserProgress.query.filter_by(user_id=user_id)\
         .filter(UserProgress.xp_from_notes > 0, UserProgress.xp_from_exercises > 0).count()
     exercises_done = UserProgress.query.filter_by(user_id=user_id)\
         .filter(UserProgress.xp_from_exercises > 0).count()
+    feedback_count = Feedback.query.filter_by(user_id=user_id).count()
 
     badges = []
 
@@ -42,5 +42,7 @@ def get_user_badges():
         badges.append({"badge_id": 5, "name": "5 Quizze gelöst", "imageUrl": "/badges/5.svg"})
     if quiz_count >= 5 and completed_modules >= 3 and total_xp >= 500:
         badges.append({"badge_id": 8, "name": "Alles abgeschlossen!", "imageUrl": "/badges/8.svg"})
+    if feedback_count >= 1:
+        badges.append({"badge_id": 6, "name": "Feedback gegeben", "imageUrl": "/badges/6.svg"})
 
     return jsonify({"badges": badges}), 200
