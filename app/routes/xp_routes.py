@@ -5,7 +5,7 @@ from app import db
 from sqlalchemy import func, text
 import json
 
-xp_bp = Blueprint('xp', __name__)
+xp_bp = Blueprint('xp', __name__, url_prefix='/api')
 
 
 @xp_bp.route('/user/xp', methods=['GET'])
@@ -58,7 +58,6 @@ def get_class_xp_insights():
         'data': data
     }), 200
 
-# Ders notu XP'si
 @xp_bp.route('/user/xp/note', methods=['POST'])
 @jwt_required()
 def gain_xp_from_note():
@@ -77,7 +76,6 @@ def gain_xp_from_note():
     db.session.commit()
     return jsonify({'message': 'XP from note updated.', 'noteXP': 80})
 
-# Egzersiz XP'si
 @xp_bp.route('/user/xp/exercise', methods=['POST'])
 @jwt_required()
 def gain_xp_from_exercise():
@@ -125,7 +123,6 @@ def gain_xp_from_exercise():
     db.session.commit()
     return jsonify({'message': 'XP from exercise updated.', 'exerciseXP': gained_xp})
 
-# Feedback XP'si
 @xp_bp.route('/user/xp/feedback', methods=['POST'])
 @jwt_required()
 def gain_xp_from_feedback():
@@ -141,7 +138,6 @@ def gain_xp_from_feedback():
     db.session.commit()
     return jsonify({'message': 'XP from feedback updated.', 'feedbackXP': 160})
 
-# Kullanıcının tamamladığı modül sayısını döner
 @xp_bp.route('/user/progress/summary', methods=['GET'])
 @jwt_required()
 def get_module_completion_summary():
@@ -154,7 +150,6 @@ def get_module_completion_summary():
         'completed_modules': completed_modules
     }), 200
 
-# Tüm kullanıcıların ilerlemeleri
 @xp_bp.route('/user/progress/all', methods=['GET'])
 @jwt_required()
 def get_all_user_progress():
@@ -169,7 +164,6 @@ def get_all_user_progress():
 
     return jsonify(result), 200
 
-# Kullanıcının tüm ilerlemesi
 @xp_bp.route('/user/progress/mine', methods=['GET'])
 @jwt_required()
 def get_my_progress():
