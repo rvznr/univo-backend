@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify
 from app.models import Note, NoteImage
 from flask_jwt_extended import jwt_required
 
-note_bp = Blueprint('note', __name__)
+note_bp = Blueprint('note', __name__, url_prefix='/api')
 
 @note_bp.route('/notes/<int:note_id>', methods=['GET'])
 @jwt_required(optional=True)
