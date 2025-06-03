@@ -2,6 +2,8 @@ import os
 import joblib
 from app.models import Topic, Note
 
+print("📌 Aktif logic.py:", __file__)
+
 def get_topic_recommendations(user_id):
     user_id = str(user_id)
 
