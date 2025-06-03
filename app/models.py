@@ -217,7 +217,7 @@ class UserProgress(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    module_id = db.Column(db.Integer, db.ForeignKey('module.id'), nullable=False)
+    module_id = db.Column(db.Integer, db.ForeignKey('module.id'), nullable=True)
     xp_from_notes = db.Column(db.Integer, default=0)
     xp_from_exercises = db.Column(db.Integer, default=0)
     xp_from_feedback = db.Column(db.Integer, default=0)

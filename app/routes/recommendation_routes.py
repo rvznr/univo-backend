@@ -4,7 +4,7 @@ from app.ai.logic import get_topic_recommendations
 
 recommendation_bp = Blueprint('recommendation_bp', __name__)
 
-@recommendation_bp.route('/ai/recommendations', methods=['POST'])
+@recommendation_bp.route('/api/ai/recommendations', methods=['POST'])
 @jwt_required()
 def get_ai_recommendations():
     user_id = get_jwt_identity()

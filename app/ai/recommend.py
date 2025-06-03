@@ -1,30 +1,40 @@
+import os
 import joblib
 from app.models import Topic, Note
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_DIR = os.path.join(BASE_DIR, 'models')
+print("Model klasörü:", MODEL_DIR)
+print("Dosyalar:", os.listdir(MODEL_DIR))
 
 def get_topic_recommendations(user_id):
     user_id = str(user_id)
 
-    try:
-        model = joblib.load("models/nb_model.joblib")
-        le_user = joblib.load("models/le_user.joblib")
-        le_topic = joblib.load("models/le_topic.joblib")
-    except FileNotFoundError:
+    model_path = os.path.join(MODEL_DIR, "nb_model.joblib")
+    le_user_path = os.path.join(MODEL_DIR, "le_user.joblib")
+    le_topic_path = os.path.join(MODEL_DIR, "le_topic.joblib")
+
+    if not (os.path.exists(model_path) and os.path.exists(le_user_path) and os.path.exists(le_topic_path)):
         return [{
             "title": "Modell nicht gefunden",
             "description": "Das Trainingsmodell wurde nicht gefunden. Bitte zuerst train_model.py ausführen.",
             "type": "error"
         }]
 
+    model = joblib.load(model_path)
+    le_user = joblib.load(le_user_path)
+    le_topic = joblib.load(le_topic_path)
+
     if user_id not in le_user.classes_:
         return [{
-            "title": "Keine Daten",
-            "description": "Für diesen Benutzer sind nicht genügend Daten vorhanden.",
+            "title": "Keine Nutzerdaten",
+            "description": "Für diesen Benutzer gibt es noch keine Quizdaten. Bitte zuerst ein Quiz abschließen.",
             "type": "info"
         }]
 
     user_encoded = le_user.transform([user_id])[0]
-
     predictions = {}
+
     for topic_id in le_topic.classes_:
         topic_encoded = le_topic.transform([topic_id])[0]
         prob_wrong = model.predict_proba([[user_encoded, topic_encoded]])[0][0]

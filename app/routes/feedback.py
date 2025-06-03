@@ -7,7 +7,7 @@ from app.models import Feedback, UserProgress
 feedback_bp = Blueprint('feedback_bp', __name__)
 
 @feedback_bp.route('/feedback', methods=['OPTIONS', 'POST'])
-@cross_origin(origins=["http://localhost:3000"], supports_credentials=True)
+@cross_origin(origins=["https://univo-frontend.vercel.app", "https://univoxacademia.online"], supports_credentials=True)
 @jwt_required()
 def submit_feedback():
     if request.method == 'OPTIONS':
@@ -34,7 +34,7 @@ def submit_feedback():
         if not progress:
             progress = UserProgress(
                 user_id=user_id,
-                module_id = db.Column(db.Integer, db.ForeignKey('module.id'), nullable=True),
+                module_id=None,
                 xp_from_notes=0,
                 xp_from_exercises=0,
                 xp_from_feedback=160
