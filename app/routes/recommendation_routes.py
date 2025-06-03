@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.ai.logic import get_topic_recommendations
-
+from app.ai.logic import get_topic_recommendations 
 recommendation_bp = Blueprint('recommendation_bp', __name__)
 
 @recommendation_bp.route('/ai/recommendations', methods=['POST'])
