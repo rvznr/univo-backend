@@ -76,6 +76,7 @@ def gain_xp_from_note():
     db.session.commit()
     return jsonify({'message': 'XP from note updated.', 'noteXP': 80})
 
+# içinde gain_xp_from_exercise fonksiyonu
 @xp_bp.route('/user/xp/exercise', methods=['POST'])
 @jwt_required()
 def gain_xp_from_exercise():
@@ -95,14 +96,19 @@ def gain_xp_from_exercise():
             if isinstance(questions, str):
                 try:
                     parsed = json.loads(questions)
+
+                    # Nested düzleştirme (örnek: [[{...}]])
                     if isinstance(parsed, list) and len(parsed) == 1 and isinstance(parsed[0], list):
                         parsed = parsed[0]
+
                     for q in parsed:
-                        max_xp += int(q.get("xp_reward", 20))
-                except:
+                        xp = int(q.get("xp_reward", 15))
+                        max_xp += xp
+                except Exception as e:
+                    print("JSON parse hatası:", e)
                     continue
-    except:
-        pass
+    except Exception as e:
+        print("Veritabanı hatası:", e)
 
     if gained_xp > max_xp:
         return jsonify({'error': 'Invalid XP submission'}), 400
