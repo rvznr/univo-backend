@@ -76,7 +76,7 @@ def gain_xp_from_note():
     db.session.commit()
     return jsonify({'message': 'XP from note updated.', 'noteXP': 80})
 
-@xp_bp.route('/user/xp/exercise', methods=['POST'])
+@xp_bp.route('/api/user/xp/exercise', methods=['POST'])
 @jwt_required()
 def gain_xp_from_exercise():
     user_id = get_jwt_identity()
