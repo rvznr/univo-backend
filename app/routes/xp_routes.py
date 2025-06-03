@@ -76,7 +76,6 @@ def gain_xp_from_note():
     db.session.commit()
     return jsonify({'message': 'XP from note updated.', 'noteXP': 80})
 
-# içinde gain_xp_from_exercise fonksiyonu
 @xp_bp.route('/user/xp/exercise', methods=['POST'])
 @jwt_required()
 def gain_xp_from_exercise():
@@ -92,26 +91,35 @@ def gain_xp_from_exercise():
         """), {"mod_id": module_id}).fetchall()
 
         for row in result:
-            questions = row.questions
-            if isinstance(questions, str):
-                try:
-                    parsed = json.loads(questions)
+            raw = row.questions
+            if not raw:
+                continue
+            try:
+                if isinstance(raw, str):
+                    parsed = json.loads(raw)
+                else:
+                    parsed = raw
 
-                    # Nested düzleştirme (örnek: [[{...}]])
-                    if isinstance(parsed, list) and len(parsed) == 1 and isinstance(parsed[0], list):
-                        parsed = parsed[0]
+                # Düzleştir: [[{...}], {...}] → [{...}, {...}]
+                flat_questions = []
+                for item in parsed:
+                    if isinstance(item, list):
+                        flat_questions.extend(item)
+                    elif isinstance(item, dict):
+                        flat_questions.append(item)
 
-                    for q in parsed:
-                        xp = int(q.get("xp_reward", 15))
-                        max_xp += xp
-                except Exception as e:
-                    print("JSON parse hatası:", e)
-                    continue
+                for q in flat_questions:
+                    xp = int(q.get("xp_reward", 15))
+                    max_xp += xp
+
+            except Exception as e:
+                print("❌ JSON parse hatası:", e)
+                continue
     except Exception as e:
-        print("Veritabanı hatası:", e)
+        print("❌ Veritabanı hatası:", e)
 
     if gained_xp > max_xp:
-        return jsonify({'error': 'Invalid XP submission'}), 400
+        return jsonify({'error': f'Invalid XP: {gained_xp} > {max_xp}'}), 400
 
     progress = UserProgress.query.filter_by(user_id=user_id, module_id=module_id).first()
 
@@ -127,7 +135,7 @@ def gain_xp_from_exercise():
         progress.xp_from_exercises = gained_xp
 
     db.session.commit()
-    return jsonify({'message': 'XP from exercise updated.', 'exerciseXP': gained_xp})
+    return jsonify({'message': 'Exercise XP updated.', 'exerciseXP': gained_xp})
 
 @xp_bp.route('/user/xp/feedback', methods=['POST'])
 @jwt_required()
