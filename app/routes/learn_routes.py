@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import db
 from app.models import Module, UserProgress, Note, NoteImage
 
-learn_bp = Blueprint('learn', __name__, url_prefix='/api')
+learn_bp = Blueprint('learn', __name__)
 
 @learn_bp.route('/modules', methods=['GET'])
 @jwt_required(optional=True)
