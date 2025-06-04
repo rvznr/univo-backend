@@ -57,7 +57,7 @@ def create_app():
     app.register_blueprint(learn_bp, url_prefix="/api")
     app.register_blueprint(xp_bp, url_prefix="/api")
     app.register_blueprint(useranswer_bp, url_prefix="/api")
-    app.register_blueprint(recommendation_bp, url_prefix="/api")
+    #app.register_blueprint(recommendation_bp, url_prefix="/api")
     app.register_blueprint(badge_bp, url_prefix="/api")
     app.register_blueprint(note_bp, url_prefix="/api")
     app.register_blueprint(image_bp)
