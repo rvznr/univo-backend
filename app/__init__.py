@@ -43,7 +43,7 @@ def create_app():
     from app.routes.learn_routes import learn_bp
     from app.routes.xp_routes import xp_bp
     from app.routes.useranswer_routes import useranswer_bp
-    from app.routes.recommendation_routes import recommendation_bp
+    #from app.routes.recommendation_routes import recommendation_bp
     from app.routes.badge_routes import badge_bp
     from app.routes.note_routes import note_bp
     from app.routes.image_routes import image_bp
