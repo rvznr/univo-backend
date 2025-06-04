@@ -13,13 +13,26 @@ def get_topic_recommendations(user_id):
     model_path = os.path.join(MODEL_DIR, "nb_model.joblib")
     user_path = os.path.join(MODEL_DIR, "le_user.joblib")
     topic_path = os.path.join(MODEL_DIR, "le_topic.joblib")
-    print("🧠 Beklenen model dosyaları:")
-    print("➡️", model_path)
-    print("➡️", user_path)
-    print("➡️", topic_path)
+
+    print("\n🧠 MODEL YOL BİLGİLERİ")
+    print("📁 MODEL_DIR:", MODEL_DIR)
+    print("📄 model_path:", model_path)
+    print("📄 user_path :", user_path)
+    print("📄 topic_path:", topic_path)
+
+    if not os.path.exists(MODEL_DIR):
+        print("❌ MODEL_DIR bulunamadı:", MODEL_DIR)
+        return [{
+            "title": "Modell nicht gefunden",
+            "description": "Das Modellverzeichnis fehlt auf dem Server.",
+            "type": "error"
+        }]
+
+    model_files = os.listdir(MODEL_DIR)
+    print("📂 MODEL_DIR içeriği:", model_files)
 
     if not (os.path.exists(model_path) and os.path.exists(user_path) and os.path.exists(topic_path)):
-        print("❌ Model dosyaları eksik:", os.listdir(MODEL_DIR) if os.path.exists(MODEL_DIR) else "Model klasörü yok")
+        print("❌ Model dosyalarından biri eksik!")
         return [{
             "title": "Modell nicht gefunden",
             "description": "Das Trainingsmodell wurde nicht gefunden. Bitte zuerst train_model.py ausführen.",
@@ -30,6 +43,7 @@ def get_topic_recommendations(user_id):
         model = joblib.load(model_path)
         le_user = joblib.load(user_path)
         le_topic = joblib.load(topic_path)
+        print("✅ Model ve encoder'lar başarıyla yüklendi.")
     except Exception as e:
         print("❌ Model yükleme hatası:", str(e))
         return [{
@@ -39,6 +53,7 @@ def get_topic_recommendations(user_id):
         }]
 
     if user_id not in le_user.classes_:
+        print(f"ℹ️ Kullanıcı ID {user_id}, eğitim verisinde yok.")
         return [{
             "title": "Keine Daten",
             "description": "Für diesen Benutzer sind nicht genügend Daten vorhanden.",
@@ -81,6 +96,7 @@ def get_topic_recommendations(user_id):
                 shown_titles.add(note.title)
 
     if not suggestions:
+        print("🔁 Fallback önerilere geçiliyor...")
         fallback = sorted(predictions.items(), key=lambda x: x[1], reverse=True)
         for topic_id, prob in fallback:
             topic = Topic.query.get(int(topic_id))
@@ -92,4 +108,5 @@ def get_topic_recommendations(user_id):
             if len(suggestions) >= 3:
                 break
 
+    print(f"✅ Toplam öneri: {len(suggestions)}")
     return suggestions
