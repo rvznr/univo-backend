@@ -7,8 +7,8 @@ print("📌 Aktif logic.py:", __file__)
 def get_topic_recommendations(user_id):
     user_id = str(user_id)
 
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    MODEL_DIR = os.path.join(BASE_DIR, 'models')
+    MODEL_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../models'))
+
 
     model_path = os.path.join(MODEL_DIR, "nb_model.joblib")
     user_path = os.path.join(MODEL_DIR, "le_user.joblib")
