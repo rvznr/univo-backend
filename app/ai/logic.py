@@ -52,6 +52,9 @@ def get_topic_recommendations(user_id):
             "type": "error"
         }]
 
+    print("🧪 Kullanıcı ID:", user_id)
+    print("🧪 Eğitimli kullanıcılar:", list(le_user.classes_))
+
     if user_id not in le_user.classes_:
         print(f"ℹ️ Kullanıcı ID {user_id}, eğitim verisinde yok.")
         return [{
