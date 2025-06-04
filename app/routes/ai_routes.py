@@ -8,10 +8,11 @@ ai_bp = Blueprint("ai_bp", __name__)
 @jwt_required()
 def get_ai_recommendations():
     print("📥 AI Recommendation Endpoint Hit")
-    print("🔐 JWT Identity:", get_jwt_identity())
+
+    user_id = get_jwt_identity()
+    print("🔐 JWT Identity:", user_id)
     print("🧾 Request Content-Type:", request.content_type)
     print("🧾 Request Data:", request.get_data())
 
-    user_id = get_jwt_identity()
     recommendations = get_topic_recommendations(user_id)
     return jsonify({ "recommendations": recommendations })
