@@ -22,18 +22,15 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
-    from flask_cors import CORS
-
     CORS(
         app,
         resources={r"/*": {"origins": [
             "https://univo-frontend.vercel.app"
         ]}},
         supports_credentials=True
-)
+    )
 
-
-    
+    # Blueprint kayıtları
     from app.routes.auth_routes import auth_bp
     from app.routes.quiz_routes import quiz_bp
     from app.routes.quizresult_routes import quizresult_bp
@@ -41,7 +38,6 @@ def create_app():
     from app.routes.learn_routes import learn_bp
     from app.routes.xp_routes import xp_bp
     from app.routes.useranswer_routes import useranswer_bp
-    #from app.routes.recommendation_routes import recommendation_bp
     from app.routes.badge_routes import badge_bp
     from app.routes.note_routes import note_bp
     from app.routes.image_routes import image_bp
@@ -55,12 +51,19 @@ def create_app():
     app.register_blueprint(learn_bp, url_prefix="/api")
     app.register_blueprint(xp_bp, url_prefix="/api")
     app.register_blueprint(useranswer_bp, url_prefix="/api")
-    #app.register_blueprint(recommendation_bp, url_prefix="/api")
     app.register_blueprint(badge_bp, url_prefix="/api")
     app.register_blueprint(note_bp, url_prefix="/api")
     app.register_blueprint(image_bp)
     app.register_blueprint(exercise_bp, url_prefix="/api")
     app.register_blueprint(ai_bp, url_prefix="/api/ai")
+
+    @app.after_request
+    def apply_cors(response):
+        response.headers["Access-Control-Allow-Origin"] = "https://univo-frontend.vercel.app"
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
+        response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS,PUT,DELETE"
+        return response
 
     with app.app_context():
         db.create_all()
