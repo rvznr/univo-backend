@@ -27,9 +27,7 @@ def create_app():
     CORS(
         app,
         resources={r"/*": {"origins": [
-            "https://univo-frontend.vercel.app",
-            "https://univoxacademia.online",
-            "https://www.univoxacademia.online"
+            "https://univo-frontend.vercel.app"
         ]}},
         supports_credentials=True
 )
